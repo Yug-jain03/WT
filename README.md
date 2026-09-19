@@ -1,10 +1,10 @@
 # WTASS8 — Real-Time Cricket Score Management System
 
-**Web Technology Assignment 8**  
-**Student Name:** Shritej Zad  
-**Class / Division:** CS-L  
-**Roll No:** 72  
-**GitHub Repository:** [https://github.com/Shritejzad/wtass8](https://github.com/Shritejzad/wtass8)  
+**Web Technology Assignment 8**<br>
+**Student Name:** Yug Jain<br>
+**Class / Division:** CS-L<br>
+**Roll No:** 70<br>
+**GitHub Repository:** [https://github.com/Yug-jain03/WT](https://github.com/Yug-jain03/WT)
 
 ---
 
@@ -69,8 +69,8 @@ The frontend is crafted with a high-end, modern whitish design inspired by **gr-
 
 ```bash
 # Clone the repository
-git clone https://github.com/Shritejzad/wtass8.git
-cd wtass8
+git clone https://github.com/Yug-jain03/WT.git
+cd WT
 
 # Build and run with Maven
 mvn clean test
