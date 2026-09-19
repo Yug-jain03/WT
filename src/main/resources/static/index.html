@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#fafafa" />
+  <meta
+    name="description"
+    content="CricPulse live cricket score management dashboard"
+  />
+  <title>CricPulse — Live Cricket Operations</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+
+  <div class="app-bg" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="grid-noise"></span>
+  </div>
+
+  <!-- TOP NAVBAR -->
+  <header class="topbar">
+
+    <div class="brand-block">
+
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect
+            x="2"
+            y="2"
+            width="44"
+            height="44"
+            rx="14"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+
+          <path
+            d="M15 30.5c4.8-3.7 8.5-8.6 10.7-14.8
+               1.4 3.8 3.5 7.2 7.3 9.8"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          />
+
+          <circle
+            cx="13.5"
+            cy="15"
+            r="2.5"
+            fill="currentColor"
+          />
+
+          <path
+            d="M14 34h20"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+
+      <div>
+        <div class="brand-name">CRICPULSE</div>
+        <div class="brand-sub">LIVE CRICKET OPERATIONS</div>
+      </div>
+
+    </div>
+
+    <div class="topbar-right">
+
+      <div class="system-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="connection">CONNECTING</span>
+      </div>
+
+      <div class="topbar-divider"></div>
+
+      <button
+        class="icon-button"
+        id="refresh"
+        title="Refresh data"
+        aria-label="Refresh data"
+      >
+        <svg viewBox="0 0 24 24" fill="none">
+          <path
+            d="M20 11a8 8 0 0 0-14.9-3M4 13a8 8 0 0 0 14.9 3
+               M5 4v4h4M19 20v-4h-4"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      <div class="profile-chip">
+        <span class="avatar">SC</span>
+
+        <span class="profile-copy">
+          <b>Score Control</b>
+          <small>Operator</small>
+        </span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- APPLICATION -->
+  <main class="page-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-heading">
+
+        <div>
+          <span class="kicker">MATCH CENTRE</span>
+          <h2>Live fixtures</h2>
+        </div>
+
+        <span class="live-count" id="liveCount">
+          0 LIVE
+        </span>
+
+      </div>
+
+
+      <!-- SEARCH -->
+      <label class="search-box">
+
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle
+            cx="11"
+            cy="11"
+            r="6.5"
+            stroke="currentColor"
+            stroke-width="1.7"
+          />
+
+          <path
+            d="m16 16 4 4"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <input
+          id="matchSearch"
+          type="search"
+          placeholder="Search matches"
+          autocomplete="off"
+        />
+
+      </label>
+
+
+      <!-- MATCH LIST -->
+      <div id="matchList" class="match-list"></div>
+
+
+      <!-- SYSTEM INFO -->
+      <div class="sidebar-foot">
+
+        <div class="stack-status">
+          <span class="mini-dot"></span>
+          <span>REST API</span>
+          <span>·</span>
+          <span>SSE FEED</span>
+        </div>
+
+        <div class="stack-meta">
+          Spring Boot 4 • Java • JPA
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <section class="content">
+
+      <!-- PAGE HEADER -->
+      <div class="page-heading">
+
+        <div>
+
+          <span class="kicker">LIVE MATCH DESK</span>
+
+          <h1 id="venue">
+            Loading match…
+          </h1>
+
+          <div class="match-meta">
+
+            <span id="formatBadge">
+              T20
+            </span>
+
+            <span>•</span>
+
+            <span id="startMeta">
+              LIVE MATCH
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="heading-actions">
+
+          <button
+            class="button ghost"
+            id="simulate"
+          >
+            <span class="button-dot"></span>
+            Simulate Ball
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- SCORE HERO -->
+      <section class="score-hero">
+
+        <div class="hero-strip">
+
+          <div class="hero-label">
+
+            <span class="live-ring"></span>
+
+            <span id="state">
+              LIVE
+            </span>
+
+          </div>
+
+          <div class="hero-note">
+            UPDATED
+            <span id="updated">—</span>
+          </div>
+
+        </div>
+
+
+        <div class="score-main">
+
+          <!-- TEAM A -->
+          <div class="side-team">
+
+            <div class="team-identity">
+
+              <div class="team-crest crest-a">
+                <span id="teamAInitials">
+                  IND
+                </span>
+              </div>
+
+              <div>
+
+                <div class="team-code" id="teamACode">
+                  IND
+                </div>
+
+                <div class="team-name" id="teamA">
+                  India
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="score-value" id="score">
+              —
+            </div>
+
+
+            <div class="score-caption">
+
+              <span id="overs">
+                — overs
+              </span>
+
+              <span class="caption-sep">
+                •
+              </span>
+
+              <span id="runRate">
+                CRR —
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- CENTER -->
+          <div class="match-divider">
+
+            <span>
+              VS
+            </span>
+
+            <div class="divider-line"></div>
+
+            <small id="inningsState">
+              1ST INNINGS
+            </small>
+
+          </div>
+
+
+          <!-- TEAM B -->
+          <div class="side-team right">
+
+            <div class="team-identity reverse">
+
+              <div>
+
+                <div class="team-code" id="teamBCode">
+                  AUS
+                </div>
+
+                <div class="team-name" id="teamB">
+                  Australia
+                </div>
+
+              </div>
+
+              <div class="team-crest crest-b">
+
+                <span id="teamBInitials">
+                  AUS
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="score-value target"
+              id="opponentScore"
+            >
+              —
+            </div>
+
+
+            <div class="score-caption">
+
+              <span id="targetText">
+                Target —
+              </span>
+
+              <span class="caption-sep">
+                •
+              </span>
+
+              <span id="chaseStatus">
+                —
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- HERO STATS -->
+        <div class="hero-stats">
+
+          <div class="hero-stat">
+            <span>CRR</span>
+            <b id="heroCrr">—</b>
+          </div>
+
+          <div class="hero-stat">
+            <span>WICKETS</span>
+            <b id="heroWickets">—</b>
+          </div>
+
+          <div class="hero-stat">
+            <span>BALLS</span>
+            <b id="heroBalls">—</b>
+          </div>
+
+          <div class="hero-stat">
+            <span>TOSS</span>
+            <b id="heroToss">—</b>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- BATTING + COMMENTARY -->
+      <div class="dashboard-grid">
+
+        <!-- BATTING -->
+        <article class="panel batting-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <span class="kicker">
+                CURRENT INNINGS
+              </span>
+
+              <h2>
+                Batting card
+              </h2>
+
+            </div>
+
+            <span
+              class="panel-pill"
+              id="inningsLabel"
+            >
+              India • 1st innings
+            </span>
+
+          </div>
+
+
+          <div class="table-wrap">
+
+            <table class="data-table">
+
+              <thead>
+
+                <tr>
+                  <th>BATTER</th>
+                  <th>R</th>
+                  <th>B</th>
+                  <th>4s</th>
+                  <th>6s</th>
+                  <th>SR</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="batting"></tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+
+        <!-- COMMENTARY -->
+        <article class="panel commentary-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <span class="kicker">
+                DELIVERY FEED
+              </span>
+
+              <h2>
+                Live commentary
+              </h2>
+
+            </div>
+
+            <span class="signal-pill">
+              <span></span>
+              LIVE
+            </span>
+
+          </div>
+
+
+          <div
+            id="commentary"
+            class="commentary-feed"
+          ></div>
+
+        </article>
+
+      </div>
+
+
+      <!-- DELIVERIES + CONTROL -->
+      <div class="dashboard-grid lower-grid">
+
+        <!-- BALL BY BALL -->
+        <article class="panel momentum-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <span class="kicker">
+                BALL-BY-BALL
+              </span>
+
+              <h2>
+                Last 12 deliveries
+              </h2>
+
+            </div>
+
+            <span
+              class="panel-muted"
+              id="deliverySummary"
+            >
+              Waiting for feed
+            </span>
+
+          </div>
+
+
+          <div
+            id="momentum"
+            class="delivery-grid"
+          ></div>
+
+        </article>
+
+
+        <!-- QUICK CONTROL -->
+        <article class="panel control-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <span class="kicker">
+                OPERATIONS
+              </span>
+
+              <h2>
+                Quick score entry
+              </h2>
+
+            </div>
+
+            <span class="panel-muted">
+              Demo mode
+            </span>
+
+          </div>
+
+
+          <div class="quick-controls">
+
+            <div class="quick-label">
+              RUNS
+            </div>
+
+            <div class="run-buttons">
+
+              <button data-run="0">
+                DOT
+              </button>
+
+              <button data-run="1">
+                1
+              </button>
+
+              <button data-run="2">
+                2
+              </button>
+
+              <button data-run="3">
+                3
+              </button>
+
+              <button data-run="4">
+                4
+              </button>
+
+              <button data-run="6">
+                6
+              </button>
+
+            </div>
+
+
+            <button
+              class="wicket-button"
+              data-wicket="true"
+            >
+              <span class="wicket-icon">
+                W
+              </span>
+
+              Record wicket
+            </button>
+
+          </div>
+
+
+          <div class="operator-note">
+
+            <span class="note-icon">
+              i
+            </span>
+
+            <span>
+              Quick entry writes directly to the
+              Spring Boot scoring API and pushes
+              the update over SSE.
+            </span>
+
+          </div>
+
+        </article>
+
+      </div>
+
+
+      <!-- SUMMARY + INNINGS -->
+      <div class="dashboard-grid lower-grid">
+
+        <!-- SUMMARY -->
+        <article class="panel summary-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <span class="kicker">
+                MATCH SNAPSHOT
+              </span>
+
+              <h2>
+                Match summary
+              </h2>
+
+            </div>
+
+          </div>
+
+          <div
+            class="summary-metrics"
+            id="summary"
+          ></div>
+
+        </article>
+
+
+        <!-- INNINGS HISTORY -->
+        <article class="panel innings-panel">
+
+          <div class="panel-head">
+
+            <div>
+
+              <span class="kicker">
+                MATCH FLOW
+              </span>
+
+              <h2>
+                Innings history
+              </h2>
+
+            </div>
+
+          </div>
+
+          <div
+            id="inningsHistory"
+            class="innings-history"
+          ></div>
+
+        </article>
+
+      </div>
+
+
+      <!-- FOOTER -->
+      <footer class="site-footer">
+
+        <span>
+          CRICPULSE LIVE OPERATIONS
+        </span>
+
+        <span>
+          Spring Boot • JPA • H2 • Server-Sent Events
+        </span>
+
+        <span id="footerClock">
+          —
+        </span>
+
+      </footer>
+
+    </section>
+
+  </main>
+
+
+  <!-- TOAST -->
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  >
+
+    <span class="toast-icon">
+      ✓
+    </span>
+
+    <span id="toastText">
+      Score updated
+    </span>
+
+  </div>
+
+
+  <script src="/app.js"></script>
+
+</body>
+</html>
